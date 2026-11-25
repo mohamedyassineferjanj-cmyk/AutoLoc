@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.domain.Reservation;
 import tn.esprit.autoloc.service.IReservationService;
+import tn.esprit.autoloc.web.dto.ReservationResponseDto;
 
 import java.util.List;
 
@@ -23,9 +24,16 @@ public class ReservationController {
 
     private final IReservationService reservationService;
 
+    // Activité DTO : liste "à plat" avec les infos essentielles du client et du véhicule
     @GetMapping
-    public List<Reservation> findAll() {
-        return reservationService.findAll();
+    public List<ReservationResponseDto> getAllReservations() {
+        return reservationService.getAllReservations();
+    }
+
+    // Activité DTO : réservations d'un client (404 si le client n'existe pas)
+    @GetMapping("/client/{idClient}")
+    public List<ReservationResponseDto> getReservationsByClient(@PathVariable("idClient") Long idClient) {
+        return reservationService.getReservationsByClient(idClient);
     }
 
     @GetMapping("/{id}")

@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.domain.Client;
 import tn.esprit.autoloc.repository.IClientRepository;
+import tn.esprit.autoloc.web.dto.ClientRequestDto;
+import tn.esprit.autoloc.web.dto.ClientResponseDto;
+import tn.esprit.autoloc.web.mapper.ClientMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -15,6 +19,7 @@ import java.util.List;
 public class ClientServiceImpl implements IClientService {
 
     private final IClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -55,5 +60,19 @@ public class ClientServiceImpl implements IClientService {
             throw new EntityNotFoundException("Client introuvable : id = " + id);
         }
         clientRepository.deleteById(id);
+    }
+
+    @Override
+    public ClientResponseDto addClient(ClientRequestDto dto) {
+        Client client = clientMapper.toEntity(dto);    // DTO -> entité
+        client.setDateInscription(LocalDate.now());    // fixée par le serveur, pas par l'appelant
+        Client saved = clientRepository.save(client);  // INSERT
+        return clientMapper.toResponseDto(saved);      // entité -> DTO (avec l'id généré)
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ClientResponseDto getClientById(Long id) {
+        return clientMapper.toResponseDto(findById(id)); // 404 si introuvable (findById)
     }
 }

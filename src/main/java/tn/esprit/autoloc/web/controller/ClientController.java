@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.web.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import tn.esprit.autoloc.domain.Client;
 import tn.esprit.autoloc.service.IClientService;
+import tn.esprit.autoloc.web.dto.ClientRequestDto;
+import tn.esprit.autoloc.web.dto.ClientResponseDto;
 
 import java.util.List;
 
@@ -28,15 +31,17 @@ public class ClientController {
         return clientService.findAll();
     }
 
+    // Activité DTO : on renvoie un ClientResponseDto, pas l'entité
     @GetMapping("/{id}")
-    public Client findById(@PathVariable("id") Long id) {
-        return clientService.findById(id);
+    public ClientResponseDto getClientById(@PathVariable("id") Long id) {
+        return clientService.getClientById(id);
     }
 
+    // Activité DTO : on reçoit un ClientRequestDto validé (@Valid -> 400 si nom/prénom absents)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Client create(@RequestBody Client client) {
-        return clientService.create(client);
+    public ClientResponseDto addClient(@Valid @RequestBody ClientRequestDto dto) {
+        return clientService.addClient(dto);
     }
 
     @PutMapping("/{id}")

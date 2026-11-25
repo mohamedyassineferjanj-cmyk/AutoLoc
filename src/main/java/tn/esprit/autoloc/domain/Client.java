@@ -29,13 +29,15 @@ public class Client {
     @Column(nullable = false, length = 50)
     private String prenom;
 
-    @Column(nullable = false, unique = true, length = 100)
+    // Facultatif depuis l'activité DTO (le ClientRequestDto ne l'impose pas)
+    @Column(unique = true, length = 100)
     private String email;
 
     @Column(length = 20)
     private String telephone;
 
-    @Column(nullable = false, unique = true, length = 30)
+    // Facultatif : le ClientRequestDto ne contient pas le numéro de permis
+    @Column(unique = true, length = 30)
     private String numPermis;
 
     private LocalDate dateInscription;
